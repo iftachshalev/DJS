@@ -39,7 +39,7 @@ class Road:
 
     def __repr__(self):
         s = ""
-        for i, car in enumerate(self.passed):
+        for i, car in enumerate(self.cars):
 
-            s += f"for car number id {car.vehicle_id} ==> " + car.__repr__() + "\n"
-        return f"for road {self.road_name}:\n"+s
+            s += f"\tcar id {car.vehicle_id} ==> " + car.__repr__() + "\n"
+        return s

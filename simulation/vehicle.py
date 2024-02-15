@@ -9,7 +9,7 @@ class Vehicle:
         self.a = 0  # option to make it more realistic in the future
         self.time_since_arrival = -1
         if vehicle_id is None:
-            self.vehicle_id = random.randint(1, 10000)  # not a good way to do that => change it
+            self.vehicle_id = random.randint(1000, 9999)  # not a good way to do that => change it
         else:
             self.vehicle_id = vehicle_id
 
