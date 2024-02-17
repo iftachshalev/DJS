@@ -1,14 +1,18 @@
 from vehicle import *
+from random import randint
 
 
 class Road:
 
     SECONDS_BETWEEN_CARS_GREEN = 2
 
-    def __init__(self, road_name):
+    def __init__(self, road_name, num_cars):
         self.road_name = road_name  # enter.exit
-        self.cars = [Vehicle(121), Vehicle(900), Vehicle(600), Vehicle(200), Vehicle(500), Vehicle(1200), Vehicle(700)]
+        self.cars = self.set_cars(num_cars)
         self.passed = []
+
+    def set_cars(self, num_cars):
+        return [Vehicle((randint(10, 1000)//10)*10) for i in range(num_cars)]
 
     def advance_red_road(self, sec):
         for i in self.cars:
