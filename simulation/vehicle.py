@@ -6,10 +6,9 @@ class Vehicle:
     def __init__(self, distance=100, speed=40, vehicle_id=None):  # distance[M] speed[kph]
         self.distance = distance
         self.v = int(speed/3.6)
-        self.a = 0  # option to make it more realistic in the future
         self.time_since_arrival = -1
         if vehicle_id is None:
-            self.vehicle_id = random.randint(1000, 9999)  # not a good way to do that => change it
+            self.vehicle_id = random.randint(1000, 9999)
         else:
             self.vehicle_id = vehicle_id
 

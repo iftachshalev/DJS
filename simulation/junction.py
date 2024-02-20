@@ -8,11 +8,12 @@ class Junction:
     COMBINATIONS = [[6.3, 6.1, 4.5], [2.3, 2.5, 4.5], [2.3, 4.1, 4.5]]
     SWITCH_PENALTY_SEC = 1  # unrealistic
     CAMERA_DISTANCE = 50  # [m]
+    NUM_CARS = 5  # format should be changed to allow different number of cars between roads
 
     def __init__(self, detailed_print=False):
         self.roads = {}
         for i in self.ROADS:
-            self.roads[i] = Road(i, 5)
+            self.roads[i] = Road(self.NUM_CARS)
         self.green_comb = self.COMBINATIONS[0]
         self.green_time = 0
         self.time_sec = 0
@@ -20,6 +21,19 @@ class Junction:
         self.action_decider = ActionDecider(self.COMBINATIONS)
         self.next_green_comb = self.COMBINATIONS[0]
         self.switched = 0
+        self.tick_count = 0
+
+    def run(self, tick=0.1):
+
+        while True:
+            self.advance_junction(tick)
+            print(self.__repr__())
+
+            if self.is_ended():
+                print(self.end_of_simulation())
+                break
+
+            self.get_action()
 
     def update_green_comb(self):
         if self.next_green_comb != self.green_comb:
@@ -45,7 +59,7 @@ class Junction:
     def get_cars_in_distance(cars, dist):
         sum_of_cars = 0
         for i in cars:
-            if i.distance <= dist and i.distance != -1:
+            if i.distance <= dist:
                 sum_of_cars += 1
         return sum_of_cars
 
@@ -58,23 +72,27 @@ class Junction:
             comb_cars.append(sum(temp))
         return comb_cars
 
-    def action_algo(self):
-        # road_cars_dict = {}
-        # for i in self.roads:
-        #     road_cars_dict[i.road_name] = len(i.cars)
+    def get_action(self):
 
         comb_cars = self.get_comb_cars()
-
         self.next_green_comb = self.action_decider.most_cars(comb_cars, self.green_comb, self.green_time)
+
+    def is_ended(self):
+        for i in self.roads.values():
+            if len(i.cars) != 0:
+                return False
+        return True
 
     def __repr__(self):
         s = ""
         for i in self.roads.values():
             if self.detailed_print:
-                s += f"ROAD {i.road_name}: there are {len(i.cars)} cars and {len(i.passed)} passed\n"
+                s += (f"ROAD {list(self.roads.keys())[list(self.roads.values()).index(i)]}: there are {len(i.cars)} "
+                      f"cars and {len(i.passed)} passed\n")
                 s += i.__repr__()
             else:
-                s += f"ROAD {i.road_name}: there are {len(i.cars)} cars and {len(i.passed)} passed\n"
+                s += (f"ROAD {list(self.roads.keys())[list(self.roads.values()).index(i)]}: there are {len(i.cars)} "
+                      f"cars and {len(i.passed)} passed\n")
         s += f"time since init: {self.time_sec}\n"
         return s
 

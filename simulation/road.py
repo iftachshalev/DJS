@@ -6,12 +6,12 @@ class Road:
 
     SECONDS_BETWEEN_CARS_GREEN = 2
 
-    def __init__(self, road_name, num_cars):
-        self.road_name = road_name  # enter.exit
+    def __init__(self, num_cars):
         self.cars = self.set_cars(num_cars)
         self.passed = []
 
-    def set_cars(self, num_cars):
+    @staticmethod
+    def set_cars(num_cars):  # returns a list of car objects
         return [Vehicle((randint(10, 1000)//10)*10) for i in range(num_cars)]
 
     def advance_red_road(self, sec):
@@ -35,10 +35,10 @@ class Road:
             time_to_remove = max([i.time_since_arrival for i in self.cars])
 
             if time_to_remove != -1:
-                for j in self.cars:
-                    if j.time_since_arrival == time_to_remove:
-                        self.passed.append(j)
-                        self.cars.remove(j)
+                for car in self.cars:
+                    if car.time_since_arrival == time_to_remove:
+                        self.passed.append(car)
+                        self.cars.remove(car)
                         break
 
     def __repr__(self):
