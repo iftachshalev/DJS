@@ -12,7 +12,7 @@ def check_junction():
         jc.advance_junction(2)
         print(jc)
 
-        cars = [len(j.cars) for j in jc.roads]
+        cars = [len(j.cars) for j in jc.roads.values()]
         if sum(cars) == 0:
             print(jc.end_of_simulation())
             break
