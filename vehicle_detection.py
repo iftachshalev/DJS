@@ -9,7 +9,7 @@ class VehicleDetection:
         init the traned module
         """
 
-        self.cars_cascade = cv2.CascadeClassifier('Vehicle-Detection/haarcascade_car.xml')
+        self.cars_cascade = cv2.CascadeClassifier('haarcascade_car.xml')
 
     def detect_cars(self, frame):
 
