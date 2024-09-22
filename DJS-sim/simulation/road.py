@@ -4,7 +4,7 @@ from random import randint
 
 class Road:
 
-    SECONDS_BETWEEN_CARS_GREEN = 2
+    TIME_BETWEEN_CARS = 1  # [s] cant be 0
 
     def __init__(self, num_cars):
         self.cars = self.set_cars(num_cars)
@@ -18,13 +18,13 @@ class Road:
         for i in self.cars:
             i.advance(sec)
 
-    def advance_green_road(self, sec):
+    def advance_green_road(self, tick, green_time):  # GT is given before += tick
         # 1. advance red for sec long.
-        self.advance_red_road(sec)
+        self.advance_red_road(tick)
 
         # 2. remove cars according to sec.
-        car_pass = int(sec)//self.SECONDS_BETWEEN_CARS_GREEN + 1
-        self.remove_n_car(car_pass)
+        should_pass = int((green_time + tick)/self.TIME_BETWEEN_CARS) - int(green_time/self.TIME_BETWEEN_CARS)
+        self.remove_n_car(should_pass)
 
     def remove_n_car(self, n):
 
