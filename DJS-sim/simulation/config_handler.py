@@ -12,6 +12,7 @@ class Config:
                 self.SWITCH_PENALTY = data["SWITCH_PENALTY"]
                 self.CAMERA_DISTANCE = data["CAMERA_DISTANCE"]
                 self.NUM_CARS = data["NUM_CARS"]
+                self.MAX_VEHICLE_DISTANCE = data["MAX_VEHICLE_DISTANCE"]
 
             except yaml.YAMLError as exc:
                 print(exc)

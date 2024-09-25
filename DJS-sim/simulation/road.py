@@ -4,15 +4,15 @@ from random import randint
 
 class Road:
 
-    TIME_BETWEEN_CARS = 1  # [s] cant be 0
+    TIME_BETWEEN_CARS = 0.1  # [s] cant be 0
 
-    def __init__(self, num_cars):
-        self.cars = self.set_cars(num_cars)
+    def __init__(self, num_cars, max_dis):
+        self.cars = self.set_cars(num_cars, max_dis)
         self.passed = []
 
     @staticmethod
-    def set_cars(num_cars):  # returns a list of car objects
-        return [Vehicle((randint(10, 1000)//10)*10) for i in range(num_cars)]
+    def set_cars(num_cars, max_dis):  # returns a list of car objects
+        return [Vehicle(randint(10, max_dis)) for i in range(num_cars)]
 
     def advance_red_road(self, sec):
         for i in self.cars:

@@ -3,14 +3,29 @@
 class ActionDecider:
 
     def __init__(self, combs):
-        self.combinations = combs
+        self.combinations = combs  # to remove
 
-    def most_cars(self, cars_in_combs, green_comb, green_time):
+    def most_cars(self, snap, GC, GT):
 
-        hpc_car_num = max(cars_in_combs)
-        hpc_idx = cars_in_combs.index(hpc_car_num)
+        max_comb = num_of_combs(snap)
+        cars_in_comb = get_num_cars(snap, max_comb)
+        return cars_in_comb.index(max(cars_in_comb))
 
-        if len(set(cars_in_combs)) == 1:
-            return green_comb
 
-        return hpc_idx
+def num_of_combs(mat):
+    combs = set()
+    for i in mat:
+        for j in i:
+            if j:
+                combs.update(set(j[1:]))
+    return max(combs)
+
+
+def get_num_cars(mat, max_comb):
+    cars = [0 for i in range(max_comb+1)]
+    for i in mat:
+        for road_arr in i:
+            if road_arr:
+                for comb in road_arr[1:]:
+                    cars[comb] += road_arr[0]
+    return cars

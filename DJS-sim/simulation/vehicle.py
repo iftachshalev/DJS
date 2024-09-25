@@ -3,7 +3,7 @@ import random
 
 class Vehicle:
 
-    def __init__(self, distance=100, speed=40, vehicle_id=None):  # distance[M] speed[kph]
+    def __init__(self, distance=100, speed=36, vehicle_id=None):  # distance[M] speed[kph]
         self.distance = distance
         self.v = int(speed/3.6)  # convertion to [M/S] and rounding
         self.time_since_arrival = -1  # -1 until the car reaches the junction
