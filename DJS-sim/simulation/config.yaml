@@ -14,7 +14,7 @@ COMBINATIONS:
   -
     - 1.2
     - 1.3
-SWITCH_PENALTY: 0  # [s] unrealistic
-CAMERA_DISTANCE: 50  # [m] put -1 for ignoring camera distance
-NUM_CARS: 10  # format should be changed to allow different number of cars between roads
+SWITCH_PENALTY: 2  # [s] unrealistic
+CAMERA_DISTANCE: 100  # [m] put -1 for ignoring camera distance
+NUM_CARS: 100  # format should be changed to allow different number of cars between roads
 MAX_VEHICLE_DISTANCE: 1000

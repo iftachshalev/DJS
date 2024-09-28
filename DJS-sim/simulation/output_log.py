@@ -19,7 +19,7 @@ class Output:
         meter_char_sign = 10  # cannot be 0
 
         print(f"after {jc.sim_time} seconds, this is the state:")
-        print(f"green combination: {CONF.COMBINATIONS[jc.green_comb]} for {jc.green_time} seconds")
+        print(f"green combination: {CONF.COMBINATIONS[jc.green_comb]} for {jc.jc_green_time} seconds")
 
         for i in CONF.ROADS:
 
@@ -35,8 +35,13 @@ class Output:
 
                 if road_str[place_idx] == "-":
                     road_str = road_str[:place_idx] + "1" + road_str[place_idx+1:]
+                elif road_str[place_idx] == "@":
+                    pass
                 else:
-                    road_str = road_str[:place_idx] + str(int(road_str[place_idx]) + 1) + road_str[place_idx + 1:]
+                    if int(road_str[place_idx]) < 9:
+                        road_str = road_str[:place_idx] + str(int(road_str[place_idx]) + 1) + road_str[place_idx + 1:]
+                    else:
+                        road_str = road_str[:place_idx] + "@" + road_str[place_idx + 1:]
 
             if CONF.CAMERA_DISTANCE >= CONF.MAX_VEHICLE_DISTANCE:
                 pass
@@ -44,7 +49,7 @@ class Output:
                 camera_idx = int(CONF.CAMERA_DISTANCE/meter_char_sign)  # accurate print - it should be divisible
                 road_str = road_str[:camera_idx] + f"{bcolors.ENDC}" + road_str[camera_idx:]
 
-            road_str = f"{bcolors.OKBLUE}{road_str}|==> {len(jc.roads[i].cars)} cars"
+            road_str = f"{bcolors.OKBLUE}{road_str}|==> {len(jc.roads[i].cars)} cars; GT - {jc.roads[i].green_time} [s]"
 
             print(road_str)
         jc.update_snapshot()

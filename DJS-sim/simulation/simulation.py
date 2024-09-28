@@ -5,7 +5,7 @@ import logging as log
 def check_junction():
 
     jc = Junction()
-    jc.run(2)
+    jc.run(5)
 
 
 check_junction()

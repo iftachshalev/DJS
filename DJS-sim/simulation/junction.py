@@ -1,3 +1,5 @@
+import configparser
+
 from road import Road
 from action import ActionDecider
 from config_handler import *
@@ -16,7 +18,7 @@ class Junction:
 
         # initializing some junction params
         self.green_comb = 0  # the index of the activated combination in the combs array in the config
-        self.green_time = 0  # [s] the time that the current combination has been active
+        self.jc_green_time = 0  # [s] the time that the current combination has been active
         self.sim_time = 0  # [s] the calculated total time of the simulation
         self.switched = 0  # the amount of times the lights switched
         self.snapshot = self.init_snapshot()  # snapshot of the junction as a matrix for the RL model
@@ -49,13 +51,13 @@ class Junction:
             action = self.get_action()  # - 1
 
             if action != self.green_comb:
-                self.output.print_str(f"witching: {CONF.COMBINATIONS[self.green_comb]} ---> {CONF.COMBINATIONS[action]}")
+                self.output.print_str(f"switching: {CONF.COMBINATIONS[self.green_comb]}---> {CONF.COMBINATIONS[action]}")
                 self.switch_comb(action)  # - 2 - a lot of problem with the switching - figur this out
 
             self.output.print_str(f"advancing {tick} seconds\n")
-            self.advance_junction(tick)  # - 3
-            self.sim_time += tick
-            self.green_time += tick
+            self.advance_junction(tick, CONF.COMBINATIONS[self.green_comb])  # - 3
+            self.jc_green_time += tick
+            self.add_to_gt(CONF.COMBINATIONS[self.green_comb], tick)
 
             self.output.print_state(self)  # - 4
 
@@ -64,22 +66,34 @@ class Junction:
                 break
 
     def get_action(self):
-        return self.action_decider.most_cars(self.snapshot, self.green_comb, self.green_time)  # <== inputs for RL model
+        return self.action_decider.most_cars(self.snapshot, self.green_comb, self.jc_green_time)  # <== inputs for RL model
 
     def switch_comb(self, action):
-        self.green_comb = action
-        self.green_time = 0
-        self.switched += 1
-        self.sim_time += CONF.SWITCH_PENALTY  # should cars advance? <<<<<<<======
 
-    def advance_junction(self, tick):
+        # advance the jc: green - road was in last green comb and in new 1. red - every one
+        green_roads = list(set(CONF.COMBINATIONS[self.green_comb]) & set(CONF.COMBINATIONS[action]))
+
+        self.output.print_str(f"in the switch, roads {green_roads} stay green")
+        self.advance_junction(CONF.SWITCH_PENALTY, green_roads)
+
+        # update params for the new active comb
+        self.add_to_gt(green_roads, CONF.SWITCH_PENALTY)
+        to_reset_gt_roads = [i for i in CONF.COMBINATIONS[self.green_comb] if i not in green_roads]
+        self.reset_gt(to_reset_gt_roads)
+        self.jc_green_time = 0
+        self.switched += 1
+        self.green_comb = action
+
+    def advance_junction(self, tick, green_roads):
 
         for i in CONF.ROADS:
-            if i in CONF.COMBINATIONS[self.green_comb]:
-                self.roads[i].advance_green_road(tick, self.green_time)  # ======>>>>> check for consistency in GT
+            if i in green_roads:
+                self.roads[i].advance_green_road(tick)
 
             else:
                 self.roads[i].advance_red_road(tick)
+
+        self.sim_time += tick
 
     def is_ended(self):
         for i in self.roads.values():
@@ -119,3 +133,13 @@ class Junction:
             enter = int(str(i).split(".")[0])
             exit_ = int(str(i).split(".")[1])
             self.snapshot[enter-1][exit_-1][0] = cars_in_dis
+
+    def reset_gt(self, roads_to_reset):
+        for i in CONF.ROADS:
+            if i in roads_to_reset:
+                self.roads[i].green_time = 0
+
+    def add_to_gt(self, roads_to_add_to, tick):
+        for i in CONF.ROADS:
+            if i in roads_to_add_to:
+                self.roads[i].green_time += tick

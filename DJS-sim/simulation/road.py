@@ -4,11 +4,12 @@ from random import randint
 
 class Road:
 
-    TIME_BETWEEN_CARS = 0.1  # [s] cant be 0
+    CARS_LIVING_PER_SEC = 3  # [s] cant be 0. 1 over this value is how many cars get out every sec
 
     def __init__(self, num_cars, max_dis):
         self.cars = self.set_cars(num_cars, max_dis)
         self.passed = []
+        self.green_time = 0
 
     @staticmethod
     def set_cars(num_cars, max_dis):  # returns a list of car objects
@@ -18,12 +19,13 @@ class Road:
         for i in self.cars:
             i.advance(sec)
 
-    def advance_green_road(self, tick, green_time):  # GT is given before += tick
+    def advance_green_road(self, tick):  # GT is given before += tick
         # 1. advance red for sec long.
         self.advance_red_road(tick)
 
         # 2. remove cars according to sec.
-        should_pass = int((green_time + tick)/self.TIME_BETWEEN_CARS) - int(green_time/self.TIME_BETWEEN_CARS)
+        passed_before = int(self.green_time*self.CARS_LIVING_PER_SEC)
+        should_pass = int((self.green_time + tick)*self.CARS_LIVING_PER_SEC) - passed_before
         self.remove_n_car(should_pass)
 
     def remove_n_car(self, n):
