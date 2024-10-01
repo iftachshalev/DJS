@@ -1,64 +1,80 @@
 from config_handler import *
+import logging as log
+from math import ceil
 
 
 class Output:
-    def __init__(self):
-        pass
+
+    METERS_PER_SIGN = 10  # cannot be 0
+
+    def __init__(self, screen=True, log_file=False):
+        self.screen = screen
+        self.log_file = log_file
+
     def start_of_simulation(self, jc):
-        print(f"starting point:\n")
+        self.print_str(f"starting point:\n")
         self.print_state(jc)
 
     def end_of_simulation(self, jc):
-        print(f"***ENDED ON TIME: {jc.sim_time}***\n"
-              f"\t>>>total cars that passed:        |  {sum([len(j.passed) for j in jc.roads.values()])}\n"
-              f"\t>>>total cars that didn't pass:   |  {sum([len(j.cars) for j in jc.roads.values()])}\n"
-              f"\t>>>total switches:                |  {jc.switched}\n")
+        self.print_str(f"***ENDED ON TIME: {jc.sim_time}***\n"
+                       f"\t>>>total cars that passed:        |  {sum([len(j.passed) for j in jc.roads.values()])}\n"
+                       f"\t>>>total cars that didn't pass:   |  {sum([len(j.cars) for j in jc.roads.values()])}\n"
+                       f"\t>>>total switches:                |  {jc.switched}\n")
 
     def print_state(self, jc):
-
-        meter_char_sign = 10  # cannot be 0
-
-        print(f"after {jc.sim_time} seconds, this is the state:")
-        print(f"green combination: {CONF.COMBINATIONS[jc.green_comb]} for {jc.jc_green_time} seconds")
+        state = (f"after {jc.sim_time} seconds, this is the state:\n"
+                 f"green combination: {CONF.COMBINATIONS[jc.green_comb]} for {jc.jc_green_time} seconds\n")
 
         for i in CONF.ROADS:
 
             if i in CONF.COMBINATIONS[jc.green_comb]:
-                print(f"{bcolors.OKGREEN}ROAD {i}: {bcolors.ENDC}", end="")
+                state += f"{bcolors.OKGREEN}ROAD {i}: {bcolors.ENDC}"
             else:
-                print(f"{bcolors.FAIL}ROAD {i}: {bcolors.ENDC}", end="")
+                state += f"{bcolors.FAIL}ROAD {i}: {bcolors.ENDC}"
 
-            road_str = "-"*(int(CONF.MAX_VEHICLE_DISTANCE/meter_char_sign) + 1)  # +1 for no index out of range
+            road_str = "-" * ceil(CONF.MAX_VEHICLE_DISTANCE / self.METERS_PER_SIGN)
+            road_str = self.add_cars(road_str, jc, i)
+            road_str = self.add_cam_dis(road_str)
+            road_str = f"{road_str}|==> {len(jc.roads[i].cars)} cars; GT - {jc.roads[i].green_time} [s]\n"
 
-            for j in jc.roads[i].cars:
-                place_idx = int(j.distance/meter_char_sign)
+            state += road_str
 
-                if road_str[place_idx] == "-":
-                    road_str = road_str[:place_idx] + "1" + road_str[place_idx+1:]
-                elif road_str[place_idx] == "@":
-                    pass
-                else:
-                    if int(road_str[place_idx]) < 9:
-                        road_str = road_str[:place_idx] + str(int(road_str[place_idx]) + 1) + road_str[place_idx + 1:]
-                    else:
-                        road_str = road_str[:place_idx] + "@" + road_str[place_idx + 1:]
+        self.print_str(state[:-1])
+        jc.update_snapshot()
+        self.print_str(f"{nice_mat(jc.snapshot)}\n\n")
 
-            if CONF.CAMERA_DISTANCE >= CONF.MAX_VEHICLE_DISTANCE:
+    def add_cars(self, road_str, jc, road):
+        for j in jc.roads[road].cars:
+            place_idx = int(j.distance / self.METERS_PER_SIGN)
+
+            if road_str[place_idx] == "-":
+                road_str = road_str[:place_idx] + "1" + road_str[place_idx + 1:]
+            elif road_str[place_idx] == "@":
                 pass
             else:
-                camera_idx = int(CONF.CAMERA_DISTANCE/meter_char_sign)  # accurate print - it should be divisible
-                road_str = road_str[:camera_idx] + f"{bcolors.ENDC}" + road_str[camera_idx:]
+                if int(road_str[place_idx]) < 9:
+                    road_str = road_str[:place_idx] + str(int(road_str[place_idx]) + 1) + road_str[place_idx + 1:]
+                else:
+                    road_str = road_str[:place_idx] + "@" + road_str[place_idx + 1:]
+        return road_str
 
-            road_str = f"{bcolors.OKBLUE}{road_str}|==> {len(jc.roads[i].cars)} cars; GT - {jc.roads[i].green_time} [s]"
-
-            print(road_str)
-        jc.update_snapshot()
-        print(nice_mat(jc.snapshot))
-
-        print("\n\n\n")
+    def add_cam_dis(self, road_str):
+        if CONF.CAMERA_DISTANCE > CONF.MAX_VEHICLE_DISTANCE or CONF.CAMERA_DISTANCE < 0:
+            camera_idx = len(road_str)
+        else:
+            camera_idx = int(CONF.CAMERA_DISTANCE / self.METERS_PER_SIGN)  # accurate print - it should be divisible
+        road_str = road_str[:camera_idx] + f"{bcolors.ENDC}" + road_str[camera_idx:]
+        road_str = str(bcolors.OKBLUE) + road_str
+        return road_str
 
     def print_str(self, str_):
-        print(str_)
+        if self.screen:
+            print(str_)
+        if self.log_file:
+            log.info(str_.replace(bcolors.OKGREEN, "")
+                     .replace(bcolors.OKBLUE, "")
+                     .replace(bcolors.ENDC, "")
+                     .replace(bcolors.FAIL, ""))
 
 
 def nice_mat(mat):
@@ -67,6 +83,7 @@ def nice_mat(mat):
     fmt = '\t'.join('{{:{}}}'.format(x) for x in lens)
     table = [fmt.format(*row) for row in s]
     return '\n'.join(table)
+
 
 class bcolors:
     HEADER = '\033[95m'
@@ -80,17 +97,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-# def __repr__(self):
-#
-#     s = ""
-#     for i in self.roads.values():
-#         if self.detailed_print:
-#             s += (f"ROAD {list(self.roads.keys())[list(self.roads.values()).index(i)]}: there are {len(i.cars)} "
-#                   f"cars and {len(i.passed)} passed\n")
-#             s += i.__repr__()
-#         else:
-#             s += (f"ROAD {list(self.roads.keys())[list(self.roads.values()).index(i)]}: there are {len(i.cars)} "
-#                   f"cars and {len(i.passed)} passed\n")
-#     s += f"time since init: {self.sim_time}\ngreen comb {CONF.COMBINATIONS[self.green_comb]}\n\n"
-#     s += f"the junction snapshot: \n{nice_mat(self.snapshot)}\n\n\n"
-#     return s
+log.basicConfig(level=log.DEBUG,
+                format='%(levelname)s - %(message)s',
+                filename='app.log',
+                filemode='w')

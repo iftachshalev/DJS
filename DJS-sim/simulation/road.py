@@ -13,7 +13,7 @@ class Road:
 
     @staticmethod
     def set_cars(num_cars, max_dis):  # returns a list of car objects
-        return [Vehicle(randint(10, max_dis)) for i in range(num_cars)]
+        return [Vehicle(randint(0, max_dis-1)) for i in range(num_cars)]
 
     def advance_red_road(self, sec):
         for i in self.cars:

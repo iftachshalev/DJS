@@ -28,7 +28,7 @@ class Junction:
         self.action_decider = ActionDecider(CONF.COMBINATIONS)
 
         # init the output module
-        self.output = Output()
+        self.output = Output(True, False)
 
     def run(self, tick=0.1):
 
@@ -127,7 +127,7 @@ class Junction:
         for i in CONF.ROADS:
             cars_in_dis = 0
             for j in self.roads[i].cars:
-                if j.distance < CONF.CAMERA_DISTANCE:
+                if j.distance < CONF.CAMERA_DISTANCE or CONF.CAMERA_DISTANCE == -1:
                     cars_in_dis += 1
 
             enter = int(str(i).split(".")[0])
