@@ -9,7 +9,7 @@ class Uart:
     BAUDRATE = 9600
 
     def __init__(self):
-        self.uart = UART(1, baudrate=BAUDRATE, tx=TX_PIN, rx=RX_PIN, timeout=None)
+        self.uart = UART(1, baudrate=self.BAUDRATE, tx=self.TX_PIN, rx=self.RX_PIN, timeout=0xFF)
 
     def test_com(self):
         pass

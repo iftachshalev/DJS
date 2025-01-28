@@ -11,5 +11,5 @@ class TrafficLight:
 
     def update(self, new_state):  # new_state = "001010" according to the new state
         for i, char in enumerate(new_state):
-            self.lights[i].value = int(char)
+            self.lights[i].value(int(char))
 
