@@ -16,6 +16,10 @@ objects = [LedStrip(), LedStrip(), LedStrip(), LedStrip(),
            ]  # if we are using the array instead of individuals than the order needs to be the same as in data bellow
 
 while True:
+
+    print("getting data...")
     data = uart.get_state().split(".")  # ["0010", "1110", "1011", "1000", "000110", "110111"] first 4 are leds, last 2 are tls
+
+    print("updating for the data:", data)
     for i, value in enumerate(data):
         objects[i].update(value)
