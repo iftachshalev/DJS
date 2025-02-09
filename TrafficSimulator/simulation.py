@@ -8,6 +8,8 @@ from TrafficSimulator.traffic_signal import TrafficSignal
 from TrafficSimulator.vehicle_generator import VehicleGenerator
 from TrafficSimulator.window import Window
 
+from TrafficSimulator.communication import Communication
+
 
 class Simulation:
     def __init__(self, max_gen: int = None):
@@ -32,6 +34,8 @@ class Simulation:
         self._intersections: Dict[int, Set[int]] = {}  # {Road index: [intersecting roads' indexes]}
         self.max_gen: Optional[int] = max_gen  # Vehicle generation limit
         self._waiting_times_sum: float = 0  # for vehicles that completed the journey
+
+        self.comm = Communication()
 
     def add_intersections(self, intersections_dict: Dict[int, Set[int]]) -> None:
         self._intersections.update(intersections_dict)
@@ -178,6 +182,9 @@ class Simulation:
         """ Updates all the simulation traffic signals and updates the gui, if exists """
         for traffic_signal in self.traffic_signals:
             traffic_signal.update()
+
+            self.comm.update_cycle(traffic_signal.current_cycle_index)
+
         if self._gui:
             self._gui.update()
 
@@ -233,4 +240,3 @@ class Simulation:
 
 
 a = Simulation(20)
-a

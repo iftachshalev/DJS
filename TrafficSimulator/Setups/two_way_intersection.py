@@ -107,19 +107,19 @@ t117 = turn(117)  # N_L_E
 VEHICLE_RATE = 35
 PATHS = [
     [3, [0, 8, 6]],  # WEST STRAIGHT EAST
-    [1, [0, *t12, 5]],  # WEST RIGHT SOUTH
+    # [1, [0, *t12, 5]],  # WEST RIGHT SOUTH
     # [1, [0, *t27, 7]],  # WEST LEFT NORTH
 
     [3, [1, 9, 7]],  # SOUTH STRAIGHT NORTH
-    [1, [1, *t42, 6]],  # SOUTH RIGHT EAST
+    # [1, [1, *t42, 6]],  # SOUTH RIGHT EAST
     # [1, [1, *t57, 4]],  # SOUTH LEFT WEST
 
     [3, [2, 10, 4]],  # EAST STRAIGHT WEST
-    [1, [2, *t72, 7]],  # EAST RIGHT NORTH
+    # [1, [2, *t72, 7]],  # EAST RIGHT NORTH
     # [1, [2, *t87, 5]],  # EAST LEFT SOUTH
 
     [3, [3, 11, 5]],  # NORTH STRAIGHT SOUTH
-    [1, [3, *t102, 4]],  # NORTH RIGHT WEST
+    # [1, [3, *t102, 4]],  # NORTH RIGHT WEST
     # [1, [3, *t117, 6]]  # NORTH LEFT EAST
 ]
 
