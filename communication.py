@@ -19,7 +19,7 @@ class Uart:
     def get_state(self):
         while True:
             if self.uart.any() == self.MSG_SIZE:
-                data = decode(self.uart.read())
+                data = self.uart.read().decode()
                 break
             time.sleep(self.SLEEP_MS/1000)
 

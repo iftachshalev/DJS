@@ -15,6 +15,9 @@ objects = [LedStrip(), LedStrip(), LedStrip(), LedStrip(),
            TrafficLight([13, 12, 14, 27, 26, 25]), TrafficLight([15, 2, 4, 5, 18, 19])
            ]  # if we are using the array instead of individuals than the order needs to be the same as in data bellow
 
+objects[-2].test_lights()
+objects[-1].test_lights()
+
 while True:
 
     print("getting data...")
