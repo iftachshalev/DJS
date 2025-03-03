@@ -63,6 +63,7 @@ class Simulation:
         roads: List[List[Road]] = [[self.roads[i] for i in road_group] for road_group in roads]
         traffic_signal = TrafficSignal(roads, cycle, slow_distance, slow_factor, stop_distance)
         self.traffic_signals.append(traffic_signal)
+        self.comm.update_cycle(traffic_signal.current_cycle_index)  # ADDED
 
     @property
     def gui_closed(self) -> bool:
@@ -183,7 +184,7 @@ class Simulation:
         for traffic_signal in self.traffic_signals:
             traffic_signal.update()
 
-            self.comm.update_cycle(traffic_signal.current_cycle_index)
+            self.comm.update_cycle(traffic_signal.current_cycle_index)  # ADDED
 
         if self._gui:
             self._gui.update()
