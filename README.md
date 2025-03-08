@@ -3,7 +3,7 @@
 The project uses reinforcement learning and genetic algorithms to improve traffic flow and reduce vehicle waiting times in a single-lane two-way junction simulator by coordinating traffic signal schedules. 
 
 ## Installation
-
+ 
 ```bash
 git clone https://github.com/yossidoctor/AI-Traffic-Lights-Controller.git
 cd AI-Traffic-Lights-Controller

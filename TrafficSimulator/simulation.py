@@ -1,6 +1,8 @@
 from itertools import chain
 from typing import List, Dict, Tuple, Set, Optional
 
+from time import sleep
+
 from scipy.spatial import distance
 
 from TrafficSimulator.road import Road
@@ -18,6 +20,7 @@ class Simulation:
         self.roads: List[Road] = []
         self.generators: List[VehicleGenerator] = []
         self.traffic_signals: List[TrafficSignal] = []
+        self.i = 0
 
         self.collision_detected: bool = False
         self.n_vehicles_generated: int = 0
@@ -64,6 +67,7 @@ class Simulation:
         traffic_signal = TrafficSignal(roads, cycle, slow_distance, slow_factor, stop_distance)
         self.traffic_signals.append(traffic_signal)
         self.comm.update_cycle(traffic_signal.current_cycle_index)  # ADDED
+        self.comm.send_data()  # ADDED
 
     @property
     def gui_closed(self) -> bool:
@@ -172,10 +176,18 @@ class Simulation:
         if self._gui:
             self._gui.update()
 
+        # sleep(0.02)
+
     def _loop(self, n: int) -> None:
         """ Performs n simulation updates. Terminates early upon completion or GUI closing"""
         for _ in range(n):
             self.update()
+
+            self.i += 1
+            if self.i % 10 == 0:
+                print("========")
+                self.comm.update_cars(self.roads, _print=True)
+
             if self.completed or self.gui_closed:
                 return
 
@@ -185,6 +197,7 @@ class Simulation:
             traffic_signal.update()
 
             self.comm.update_cycle(traffic_signal.current_cycle_index)  # ADDED
+            self.comm.send_data()  # ADDED
 
         if self._gui:
             self._gui.update()

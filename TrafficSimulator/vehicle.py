@@ -9,7 +9,7 @@ class Vehicle:
         self.length = 4
         self.width = 2
 
-        self.s0 = 4
+        self.s0 = 4  # distance between cars
         self.T = 1
         self.v_max = 16.6  # Max velocity
         self.a_max = 1.44  # Max positive acceleration
