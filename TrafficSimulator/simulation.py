@@ -67,7 +67,7 @@ class Simulation:
         traffic_signal = TrafficSignal(roads, cycle, slow_distance, slow_factor, stop_distance)
         self.traffic_signals.append(traffic_signal)
         self.comm.update_cycle(traffic_signal.current_cycle_index)  # ADDED
-        self.comm.send_data()  # ADDED
+        self.comm.send_cycle()  # ADDED
 
     @property
     def gui_closed(self) -> bool:
@@ -176,7 +176,7 @@ class Simulation:
         if self._gui:
             self._gui.update()
 
-        # sleep(0.02)
+        sleep(0.02)
 
     def _loop(self, n: int) -> None:
         """ Performs n simulation updates. Terminates early upon completion or GUI closing"""
@@ -186,7 +186,8 @@ class Simulation:
             self.i += 1
             if self.i % 10 == 0:
                 print("========")
-                self.comm.update_cars(self.roads, _print=True)
+                self.comm.update_cars(self.roads, _print=False)  # ADDED
+                self.comm.send_vehicles()
 
             if self.completed or self.gui_closed:
                 return
@@ -197,7 +198,7 @@ class Simulation:
             traffic_signal.update()
 
             self.comm.update_cycle(traffic_signal.current_cycle_index)  # ADDED
-            self.comm.send_data()  # ADDED
+            self.comm.send_cycle()  # ADDED
 
         if self._gui:
             self._gui.update()
