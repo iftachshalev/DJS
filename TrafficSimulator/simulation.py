@@ -176,7 +176,7 @@ class Simulation:
         if self._gui:
             self._gui.update()
 
-        sleep(0.02)
+        # sleep(0.03)
 
     def _loop(self, n: int) -> None:
         """ Performs n simulation updates. Terminates early upon completion or GUI closing"""

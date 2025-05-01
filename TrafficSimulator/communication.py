@@ -1,7 +1,8 @@
-# import serial
 import time
+import serial
 from itertools import accumulate
 
+connected = False
 
 class Communication:
 
@@ -44,7 +45,8 @@ class Communication:
             3: "010010.010010"
         }
         """
-        # self.ser = serial.Serial('/dev/ttyAMA0', 9600)
+        if connected:
+            self.ser = serial.Serial('/dev/ttyAMA0', 9600)
         self.current_cycle = None
         self.led_strips = ["0" * self.NUM_LEDS_IN_ROAD for i in range(4)]
 
@@ -52,12 +54,14 @@ class Communication:
 
     def send_cycle(self):
         data = str(self.current_cycle) + "#"
-        # self.ser.write(data.encode())
+        if connected:
+            self.ser.write(data.encode())
         print("sending cycle:", data)
 
     def send_vehicles(self):
         data = ".".join(self.led_strips) + "#"
-        # self.ser.write(data.encode())
+        if connected:
+            self.ser.write(data.encode())
         print("sending leds:", data)
 
     def update_cycle(self, cycle):
