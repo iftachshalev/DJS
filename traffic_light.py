@@ -12,12 +12,12 @@ class TrafficLight:
             s = "000000"
             s = s[:i] + "1" + s[i + 1:]
             self.update(s)
-            time.sleep(0.5)
+            time.sleep(0.2)
         for i in range(3):
             self.update("111111")
-            time.sleep(0.5)
+            time.sleep(0.4)
             self.update("000000")
-            time.sleep(0.5)
+            time.sleep(0.1)
 
     def update(self, new_state):  # new_state = "001010" according to the new state
         for i, char in enumerate(new_state):
