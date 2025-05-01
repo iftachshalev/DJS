@@ -17,10 +17,14 @@ class Uart:
         pass
 
     def get_state(self):
+        data = ""
         while True:
-            if self.uart.any() == self.MSG_SIZE:
-                data = self.uart.read().decode()
-                break
-            time.sleep(self.SLEEP_MS/1000)
-
+            if self.uart.any():
+                char = self.uart.read(1).decode()
+                if char == "#":
+                    break
+                data += char
+            else:
+                time.sleep(self.SLEEP_MS / 1000)
         return data
+    
