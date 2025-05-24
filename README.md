@@ -5,8 +5,8 @@ The project uses reinforcement learning and genetic algorithms to improve traffi
 ## Installation
  
 ```bash
-git clone https://github.com/yossidoctor/AI-Traffic-Lights-Controller.git
-cd AI-Traffic-Lights-Controller
+git clone https://github.com/iftachshalev/DJS.git
+cd DJS
 pip install -r requirements.txt
 ```
 
