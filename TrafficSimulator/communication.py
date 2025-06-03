@@ -1,5 +1,5 @@
 import time
-import serial
+# import serial
 from itertools import accumulate
 
 connected = False
@@ -56,13 +56,14 @@ class Communication:
         data = str(self.current_cycle) + "#"
         if connected:
             self.ser.write(data.encode())
-        print("sending cycle:", data)
+            print("sending cycle:", data)
 
     def send_vehicles(self):
         data = ".".join(self.led_strips) + "#"
         if connected:
+            print("========")
             self.ser.write(data.encode())
-        print("sending leds:", data)
+            print("sending leds:", data)
 
     def update_cycle(self, cycle):
         self.current_cycle = cycle

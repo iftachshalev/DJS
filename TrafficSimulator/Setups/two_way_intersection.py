@@ -8,16 +8,16 @@ length = 50  # Road length
 offset = 25  # Intersection offset from the center
 
 # Nodes
-WEST_RIGHT_START = (-b - length, a)
+WEST_RIGHT_START = (-b - length -50, a)
 WEST_LEFT_START = (-b - length, -a)
 
-SOUTH_RIGHT_START = (a, b + length)
+SOUTH_RIGHT_START = (a, b + length+50)
 SOUTH_LEFT_START = (-a, b + length)
 
-EAST_RIGHT_START = (b + length, -a)
+EAST_RIGHT_START = (b + length+50, -a)
 EAST_LEFT_START = (b + length, a)
 
-NORTH_RIGHT_START = (-a, -b - length)
+NORTH_RIGHT_START = (-a, -b - length-50)
 NORTH_LEFT_START = (a, -b - length)
 
 WEST_RIGHT = (-b, a)

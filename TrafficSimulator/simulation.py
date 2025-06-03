@@ -185,7 +185,6 @@ class Simulation:
 
             self.i += 1
             if self.i % 10 == 0:
-                print("========")
                 self.comm.update_cars(self.roads, _print=False)  # ADDED
                 self.comm.send_vehicles()
 
